@@ -42,8 +42,9 @@ public class PeintureCollision : MonoBehaviour
         }
     }
 
-  //  void HitEffect(GameObject Entity)
-   // {
-   //     PaintHitEffect.Emit(Entity.transform.position)
-   // }
+   void HitEffect(GameObject Entity)
+   {
+   //PaintHitEffect.Emit(Entity.transform.position)
+   print("hello");
+   }
 }
