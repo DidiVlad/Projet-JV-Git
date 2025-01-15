@@ -1,2 +1,14 @@
 fileFormatVersion: 2
 guid: 69cf68f8ca61b8548811c39d849494b5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - FlakePrefab: {fileID: 5426166547681631228, guid: e980688f38a072b439f9326cb2dcca7a, type: 3}
+  - Peinture: {fileID: 4899112219724889359, guid: 463941a87089eac469f58c7db78281fc, type: 3}
+  - PaintHitEffect: {fileID: 7870955545562564540, guid: 61c3ad0eda930694395d402abb2f0a1e, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,3 +1,4 @@
+using NUnit.Framework.Constraints;
 using Unity.Mathematics;
 using UnityEditor.SearchService;
 using UnityEngine;
@@ -23,6 +24,7 @@ public class PeintureCollision : MonoBehaviour
         {
             Debug.Log("Hit: " + collision.gameObject.name);
             collision.gameObject.GetComponent<HealthHandler>().HP -= 1;
+            HitEffect(collision.gameObject);
             Destroy(gameObject);
         }
         else
@@ -41,10 +43,30 @@ public class PeintureCollision : MonoBehaviour
             Destroy(flake, FlakeLifetime);
         }
     }
+void HitEffect(GameObject Entity)
+{
+    if (PaintHitEffect != null)
+    {
+        Color paint_color = Peinture.GetComponent<SpriteRenderer>().color;
 
-   void HitEffect(GameObject Entity)
-   {
-   //PaintHitEffect.Emit(Entity.transform.position)
-   print("hello");
-   }
+        ParticleSystem newEffect = Instantiate(PaintHitEffect, Entity.transform.position, Entity.transform.rotation);
+
+        newEffect.transform.parent = Entity.transform;
+        var mainModule = newEffect.main; 
+        mainModule.startColor = paint_color;
+
+        if (newEffect.trails.enabled)
+        {
+            var trailsModule = newEffect.trails; 
+            trailsModule.colorOverTrail = new ParticleSystem.MinMaxGradient(paint_color);
+        }
+        newEffect.Emit(3);
+        Destroy(newEffect.gameObject, 0.5f);
+    }
+    else
+    {
+        Debug.LogWarning("PaintHitEffect is not assigned!");
+    }
+}
+
 }

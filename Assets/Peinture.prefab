@@ -168,4 +168,4 @@ MonoBehaviour:
   FlakePrefab: {fileID: 5426166547681631228, guid: e980688f38a072b439f9326cb2dcca7a, type: 3}
   FlakeLifetime: 3
   Peinture: {fileID: 4899112219724889359}
-  PaintHitEffect: {fileID: 0}
+  PaintHitEffect: {fileID: 7870955545562564540, guid: 61c3ad0eda930694395d402abb2f0a1e, type: 3}
