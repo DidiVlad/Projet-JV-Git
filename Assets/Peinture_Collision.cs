@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using Mono.Cecil.Cil;
 using NUnit.Framework.Constraints;
 using Unity.Mathematics;
 using UnityEditor.SearchService;
@@ -22,9 +25,9 @@ public class PeintureCollision : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log("Hit: " + collision.gameObject.name);
-            collision.gameObject.GetComponent<HealthHandler>().HP -= 1;
             HitEffect(collision.gameObject);
+            PaintEffect(Peinture.GetComponent<SpriteRenderer>().color, collision.gameObject);
+
             Destroy(gameObject);
         }
         else
@@ -69,4 +72,33 @@ void HitEffect(GameObject Entity)
     }
 }
 
+void PaintEffect(Color color, GameObject Entity)
+{
+    if (color == Color.black)
+    {
+        Entity.GetComponent<HealthHandler>().HP -= 1;
+    }
+    else if (color == Color.red)
+    {
+        StartCoroutine(RedPaintEffect(Entity, 0.5f, 2, 0.5f));
+    }
 }
+
+IEnumerator RedPaintEffect(GameObject entity, float damagePerTick, int tickCount, float delayBetweenTicks)
+{
+    for (int i = 0; i < tickCount; i++)
+    {
+        // Apply damage
+        entity.GetComponent<HealthHandler>().HP -= damagePerTick;
+        Debug.Log( entity.GetComponent<HealthHandler>().HP);
+
+        // Wait for the specified delay
+        yield return new WaitForSeconds(delayBetweenTicks);
+    }
+}
+
+
+}
+
+
+
