@@ -28,7 +28,6 @@ public class PeintureCollision : MonoBehaviour
             HitEffect(collision.gameObject);
             PaintEffect(Peinture.GetComponent<SpriteRenderer>().color, collision.gameObject);
 
-            Destroy(gameObject);
         }
         else
         {
@@ -82,12 +81,14 @@ void PaintEffect(Color color, GameObject Entity)
     {
         StartCoroutine(RedPaintEffect(Entity, 0.5f, 2, 0.5f));
     }
+    Destroy(gameObject);
 }
 
 IEnumerator RedPaintEffect(GameObject entity, float damagePerTick, int tickCount, float delayBetweenTicks)
 {
     for (int i = 0; i < tickCount; i++)
     {
+        print("looping");
         // Apply damage
         entity.GetComponent<HealthHandler>().HP -= damagePerTick;
         Debug.Log( entity.GetComponent<HealthHandler>().HP);
