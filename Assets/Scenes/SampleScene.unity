@@ -401,7 +401,7 @@ GameObject:
   - component: {fileID: 245211131}
   - component: {fileID: 245211134}
   - component: {fileID: 245211135}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EnemyTest
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -1086,7 +1086,7 @@ GameObject:
   - component: {fileID: 616848347}
   - component: {fileID: 616848346}
   - component: {fileID: 616848345}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EnemyTest (2)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -1526,7 +1526,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 8, y: -131}
+  m_AnchoredPosition: {x: -324, y: -131}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &956460514
@@ -1619,7 +1619,7 @@ RectTransform:
   m_GameObject: {fileID: 971297846}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 7.8999, y: 3.7417, z: 1}
+  m_LocalScale: {x: 6.4186687, y: 3.7417, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 956460513}
@@ -2737,7 +2737,7 @@ GameObject:
   - component: {fileID: 2091369659}
   - component: {fileID: 2091369658}
   - component: {fileID: 2091369657}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EnemyTest (1)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
