@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -6,12 +7,16 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 25f;
     public float dashForce = 10f;
     private bool TouchFloor = true;
+    private bool FaceRight = true;
     private Rigidbody2D rb;
     int jump_count = 0;
 
     bool IsDashing = false;
+    bool CanDash = true;
+    public float DashingTime = 0.5f;
     public float Dash_cooldown = 1f;
     public float Last_used_time;
+    public TrailRenderer tr;
 
     void Start()
     {
@@ -22,7 +27,11 @@ public class PlayerMovement : MonoBehaviour
     {
         Move();
         Jump();
-        Dash();
+        ChangeSide();
+        if (Input.GetKeyDown(KeyCode.Q) && CanDash)
+        {
+            StartCoroutine(Dash());
+        }
     }
 
     void Move()
@@ -47,24 +56,21 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void Dash()
+    private IEnumerator Dash()
     {
-        float dashDirection = Input.GetAxisRaw("Horizontal");
+        CanDash = false;
+        IsDashing = true;
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+        rb.linearVelocity = new Vector2(transform.localScale.x * dashForce, 0f);
+        tr.emitting = true;
+        yield return new WaitForSeconds(DashingTime);
+        tr.emitting = false;
+        rb.gravityScale = originalGravity;
+        IsDashing = false;
+        yield return new WaitForSeconds(Dash_cooldown);
+        CanDash = true;
 
-         if(Time.time > Last_used_time +  Dash_cooldown)
-            {
-                IsDashing = false;
-            }
-
-
-        if (Input.GetKeyDown(KeyCode.Q) && dashDirection != 0 && IsDashing == false)
-        {
-            print("Triggered Dash");
-            IsDashing = true;
-            Last_used_time = Time.time;
-            rb.linearVelocity = new Vector2(dashDirection * dashForce, rb.linearVelocity.y);
-
-        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -73,6 +79,17 @@ public class PlayerMovement : MonoBehaviour
         {
             TouchFloor = true;
             jump_count = 0;
+        }
+    }
+
+    private void ChangeSide()
+    {
+        if (FaceRight && Input.GetAxisRaw("Horizontal") < 0f || !FaceRight && Input.GetAxisRaw("Horizontal") > 0f)
+        {
+            FaceRight = !FaceRight;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
         }
     }
 }

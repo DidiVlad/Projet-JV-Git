@@ -8,6 +8,7 @@ public class PlayerHealthMain : MonoBehaviour
     public bool CanTakeDamage = true;
     public GameObject Lastcheckpoint;
     public GameObject Spawners_parent;
+    public GameObject EnemiesHolder;
 
     void Start()
     {
@@ -64,12 +65,17 @@ public class PlayerHealthMain : MonoBehaviour
     void SpawnEnemies()
     {
         print("triggered");
+        foreach (Transform enemies in EnemiesHolder.transform)
+        {
+            Destroy(enemies.gameObject);
+        }
         for (int i = 0; i < Spawners_parent.transform.childCount; i++)
         {
         Transform Child = Spawners_parent.transform.GetChild(i);
         Child.GetComponent<SpriteRenderer>().color = new Color(0,0,0,0);
         GameObject new_Enemy = Instantiate(Child.GetComponent<Spawner>().Enemy_To_Spawn);
         new_Enemy.transform.position = Child.transform.position;
+        new_Enemy.transform.parent = EnemiesHolder.transform;
         new_Enemy.GetComponent<IA_Main>().plr = gameObject;
         }
 

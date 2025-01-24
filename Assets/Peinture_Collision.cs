@@ -20,7 +20,6 @@ public class PeintureCollision : MonoBehaviour
     if (other.gameObject.CompareTag("Ground"))
     {
         Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, other.transform.up);
-        print(other.transform.up);
 
         LeaveFlake(other.ClosestPoint(transform.position), surfaceRotation );
         Destroy(gameObject);
