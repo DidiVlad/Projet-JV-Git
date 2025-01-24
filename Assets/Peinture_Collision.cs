@@ -13,26 +13,32 @@ public class PeintureCollision : MonoBehaviour
     public GameObject Peinture;
     public ParticleSystem PaintHitEffect;
     SpriteRenderer sprt_renderer;
+    private bool hasHitEnemy = false;
 
-    private void OnCollisionEnter2D(Collision2D collision)
+  private void OnTriggerEnter2D(Collider2D other)
+{
+    if (other.gameObject.CompareTag("Ground"))
     {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, collision.GetContact(0).normal);
+        Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, other.transform.up);
+        print(other.transform.up);
 
-            LeaveFlake(collision.GetContact(0).point, surfaceRotation);
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.CompareTag("Enemy"))
-        {
-            HitEffect(collision.gameObject);
-            PaintEffect(Peinture.GetComponent<SpriteRenderer>().color, collision.gameObject);
-
-        }
-        else
-        {
-        }
+        LeaveFlake(other.ClosestPoint(transform.position), surfaceRotation );
+        Destroy(gameObject);
     }
+    if (hasHitEnemy) return;
+    else if (other.gameObject.CompareTag("Enemy"))
+    {
+        hasHitEnemy = true;
+        print("hit");
+        HitEffect(other.gameObject);
+        PaintEffect(Peinture.GetComponent<SpriteRenderer>().color, other.gameObject);
+    }
+    else
+    {
+        
+    }
+}
+
 
     private void LeaveFlake(Vector2 position, Quaternion rotation)
     {
@@ -77,26 +83,9 @@ void PaintEffect(Color color, GameObject Entity)
     {
         Entity.GetComponent<HealthHandler>().HP -= 1;
     }
-    else if (color == Color.red)
-    {
-        StartCoroutine(RedPaintEffect(Entity, 0.5f, 2, 0.5f));
-    }
     Destroy(gameObject);
 }
 
-IEnumerator RedPaintEffect(GameObject entity, float damagePerTick, int tickCount, float delayBetweenTicks)
-{
-    for (int i = 0; i < tickCount; i++)
-    {
-        print("looping");
-        // Apply damage
-        entity.GetComponent<HealthHandler>().HP -= damagePerTick;
-        Debug.Log( entity.GetComponent<HealthHandler>().HP);
-
-        // Wait for the specified delay
-        yield return new WaitForSeconds(delayBetweenTicks);
-    }
-}
 
 
 }

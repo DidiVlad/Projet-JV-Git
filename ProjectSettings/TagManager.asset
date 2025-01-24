@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Flake
   - Paint
+  - Projectile
   layers:
   - Default
   - TransparentFX
