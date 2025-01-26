@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
 
     bool IsDashing = false;
     bool CanDash = true;
-    public float DashingTime = 0.5f;
+    public float DashingTime = 0.4f;
     public float Dash_cooldown = 1f;
     public float Last_used_time;
     public TrailRenderer tr;
@@ -90,6 +90,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
+
         }
     }
 }

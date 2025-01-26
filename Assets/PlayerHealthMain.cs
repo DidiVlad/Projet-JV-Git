@@ -38,7 +38,7 @@ public class PlayerHealthMain : MonoBehaviour
       }
       else
       {
-        print(other.name);
+        //print(other.name);
       }
     }
 }
