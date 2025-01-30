@@ -8,6 +8,6 @@ public Transform player;
     void Update()
     
     {
-    transform.position = new Vector3(player.transform.position.x , player.transform.position.y + 2, -10);
+    transform.position = new Vector3(player.transform.position.x , player.transform.position.y + 1, -10);
     }
 }
