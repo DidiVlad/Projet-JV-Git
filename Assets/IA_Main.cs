@@ -15,14 +15,18 @@ public class IA_Main : MonoBehaviour
 
     void Update()
     {
-        if (CheckForDetection())
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
         {
-            Chase();
+            if (CheckForDetection())
+            {
+                Chase();
+            }
+            else
+            {
+                rb.linearVelocity = Vector2.zero; 
+            }
         }
-        else
-        {
-            rb.linearVelocity = Vector2.zero; 
-        }
+ 
     }
 
     bool CheckForDetection()

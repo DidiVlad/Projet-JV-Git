@@ -28,7 +28,6 @@ public class PeintureCollision : MonoBehaviour
     else if (other.gameObject.CompareTag("Enemy"))
     {
         hasHitEnemy = true;
-        print("hit");
         HitEffect(other.gameObject);
         PaintEffect(Peinture.GetComponent<SpriteRenderer>().color, other.gameObject);
     }
@@ -81,10 +80,29 @@ void PaintEffect(Color color, GameObject Entity)
     if (color == Color.black)
     {
         Entity.GetComponent<HealthHandler>().HP -= 1;
+        Destroy(gameObject);
     }
-    Destroy(gameObject);
+    else if (color == Color.red)
+    {
+
+    }
+    else if (color == Color.blue)
+    {
+        StartCoroutine(BlueEffect(Entity));
+    }
+    
 }
 
+    private IEnumerator BlueEffect(GameObject Entity)
+    {
+        Entity.GetComponent<HealthHandler>().HP -= 0.5f;
+        Entity.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+        Entity.GetComponent<SpriteRenderer>().color = Color.blue;
+        yield return new WaitForSeconds(1f);
+        Entity.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+        Entity.GetComponent<SpriteRenderer>().color = Color.white;
+        Destroy(gameObject);
+    }
 
 
 }

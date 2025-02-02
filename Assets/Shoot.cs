@@ -45,4 +45,6 @@ public class Player_Shoot : MonoBehaviour
         Nv_Peinture.GetComponent<Rigidbody2D>().AddForce(Nv_Peinture.transform.right * Peinture_Vitesse);
 
     }
+
+
 }
