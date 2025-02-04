@@ -224,6 +224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 3
+  MaxHP: 3
 --- !u!114 &1098085224275762543
 MonoBehaviour:
   m_ObjectHideFlags: 0
