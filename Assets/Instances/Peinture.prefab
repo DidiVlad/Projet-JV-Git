@@ -169,3 +169,4 @@ MonoBehaviour:
   FlakeLifetime: 3
   Peinture: {fileID: 4899112219724889359}
   PaintHitEffect: {fileID: 7870955545562564540, guid: 61c3ad0eda930694395d402abb2f0a1e, type: 3}
+  FireEffect: {fileID: 0}

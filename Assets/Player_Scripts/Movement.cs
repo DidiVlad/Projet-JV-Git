@@ -10,7 +10,6 @@ public class PlayerMovement : MonoBehaviour
     private bool FaceRight = true;
     private Rigidbody2D rb;
     int jump_count = 0;
-
     bool IsDashing = false;
     bool CanDash = true;
     public float DashingTime = 0.4f;
