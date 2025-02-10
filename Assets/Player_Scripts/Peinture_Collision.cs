@@ -15,6 +15,13 @@ public class PeintureCollision : MonoBehaviour
     public ParticleSystem FireEffect;
     SpriteRenderer sprt_renderer;
     private bool hasHitEnemy = false;
+    private GameObject Player;
+
+    void Start()
+    {
+        Player =  GameObject.FindGameObjectWithTag("Player");
+        gameObject.GetComponent<SpriteRenderer>().color = Player.GetComponent<PaintHandler>().CurrentColor;
+    }
 
   private void OnTriggerEnter2D(Collider2D other)
 {
@@ -105,26 +112,31 @@ void PaintEffect(Color color, GameObject Entity)
         Destroy(gameObject);
     }
 
-    private IEnumerator RedEffect(GameObject Entity)
+private IEnumerator RedEffect(GameObject Entity)
+{
+    gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
+    
+    for (int i = 0; i < 2; i++)
     {
-        gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
-        for (int i = 0; i < 2; i++)
+        if (Entity != null)
         {
             Entity.GetComponent<SpriteRenderer>().color = Color.red;
-            ParticleSystem newEffect = Instantiate(FireEffect, Entity.transform.position, Entity.transform.rotation);
-            newEffect.transform.parent = Entity.transform;
-            print("effect");
-            newEffect.Emit(10);
+
+            ParticleSystem newEffect = Instantiate(FireEffect, Entity.transform.position, Quaternion.identity);
+            newEffect.transform.parent = Entity.transform; 
+            newEffect.Play();
+            Entity.GetComponent<HealthHandler>().HP -= 0.5f;
+
+            yield return new WaitForSeconds(newEffect.main.duration);
             if (Entity != null)
             {
-                Entity.GetComponent<HealthHandler>().HP -= 0.75f;
+                Entity.GetComponent<SpriteRenderer>().color = Color.white;
+                Destroy(newEffect.gameObject);
             }
-            yield return new WaitForSeconds(0.5f);
-            Destroy(newEffect);
-            Entity.GetComponent<SpriteRenderer>().color = Color.white;
         }
-        Destroy(gameObject);
     }
+}
+
 
 
 }

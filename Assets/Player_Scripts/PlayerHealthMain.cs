@@ -65,7 +65,7 @@ public class PlayerHealthMain : MonoBehaviour
 
     void SpawnEnemies()
     {
-        print("triggered");
+        print("Spawned Enemies");
         foreach (Transform enemies in EnemiesHolder.transform)
         {
             Destroy(enemies.gameObject);
