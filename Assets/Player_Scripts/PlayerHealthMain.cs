@@ -9,6 +9,7 @@ public class PlayerHealthMain : MonoBehaviour
     public GameObject Lastcheckpoint;
     public GameObject Spawners_parent;
     public GameObject EnemiesHolder;
+    public GameObject HealthBar;
 
     void Start()
     {

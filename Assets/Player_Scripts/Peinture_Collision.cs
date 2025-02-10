@@ -12,6 +12,7 @@ public class PeintureCollision : MonoBehaviour
     public float FlakeLifetime = 3f;
     public GameObject Peinture;
     public ParticleSystem PaintHitEffect;
+    public ParticleSystem FireEffect;
     SpriteRenderer sprt_renderer;
     private bool hasHitEnemy = false;
 
@@ -22,7 +23,7 @@ public class PeintureCollision : MonoBehaviour
         Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, other.transform.up);
 
         LeaveFlake(other.ClosestPoint(transform.position), surfaceRotation );
-        Destroy(gameObject);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
     }
     if (hasHitEnemy) return;
     else if (other.gameObject.CompareTag("Enemy"))
@@ -31,9 +32,9 @@ public class PeintureCollision : MonoBehaviour
         HitEffect(other.gameObject);
         PaintEffect(Peinture.GetComponent<SpriteRenderer>().color, other.gameObject);
     }
-    else
+    else if (other.gameObject.CompareTag("Void"))
     {
-        
+        Destroy(gameObject);
     }
 }
 
@@ -84,23 +85,44 @@ void PaintEffect(Color color, GameObject Entity)
     }
     else if (color == Color.red)
     {
-
+        StartCoroutine(RedEffect(Entity));
     }
     else if (color == Color.blue)
     {
         StartCoroutine(BlueEffect(Entity));
-    }
-    
+    }  
 }
 
     private IEnumerator BlueEffect(GameObject Entity)
     {
+        gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
         Entity.GetComponent<HealthHandler>().HP -= 0.5f;
         Entity.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         Entity.GetComponent<SpriteRenderer>().color = Color.blue;
         yield return new WaitForSeconds(1f);
         Entity.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         Entity.GetComponent<SpriteRenderer>().color = Color.white;
+        Destroy(gameObject);
+    }
+
+    private IEnumerator RedEffect(GameObject Entity)
+    {
+        gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
+        for (int i = 0; i < 2; i++)
+        {
+            Entity.GetComponent<SpriteRenderer>().color = Color.red;
+            ParticleSystem newEffect = Instantiate(FireEffect, Entity.transform.position, Entity.transform.rotation);
+            newEffect.transform.parent = Entity.transform;
+            print("effect");
+            newEffect.Emit(10);
+            if (Entity != null)
+            {
+                Entity.GetComponent<HealthHandler>().HP -= 0.75f;
+            }
+            yield return new WaitForSeconds(0.5f);
+            Destroy(newEffect);
+            Entity.GetComponent<SpriteRenderer>().color = Color.white;
+        }
         Destroy(gameObject);
     }
 

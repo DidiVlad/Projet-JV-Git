@@ -9,6 +9,7 @@ TagManager:
   - Flake
   - Paint
   - Projectile
+  - Void
   layers:
   - Default
   - TransparentFX

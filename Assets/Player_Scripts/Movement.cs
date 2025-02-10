@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public float Dash_cooldown = 1f;
     public float Last_used_time;
     public TrailRenderer tr;
+    public GameObject Pinceau;
 
     void Start()
     {
@@ -89,6 +90,7 @@ public class PlayerMovement : MonoBehaviour
             FaceRight = !FaceRight;
             Vector3 localScale = transform.localScale;
             localScale.x *= -1f;
+            Pinceau.transform.localScale *= -1f;
             transform.localScale = localScale;
 
         }
