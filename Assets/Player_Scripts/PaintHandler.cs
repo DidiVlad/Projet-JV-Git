@@ -58,8 +58,10 @@ public class PaintHandler : MonoBehaviour
 
     public void UnlockColor(string colorToUnlock)
     {
+        print("triggered");
         if (Colors.ContainsKey(colorToUnlock) && !Colors[colorToUnlock])
         {
+            print("good");
             Colors[colorToUnlock] = true;
             unlockedColors.Add(colorToUnlock);
             Debug.Log(colorToUnlock + " unlocked!");

@@ -107,9 +107,12 @@ void PaintEffect(Color color, GameObject Entity)
         Entity.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         Entity.GetComponent<SpriteRenderer>().color = Color.blue;
         yield return new WaitForSeconds(1f);
-        Entity.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-        Entity.GetComponent<SpriteRenderer>().color = Color.white;
-        Destroy(gameObject);
+        if (Entity != null)
+        {
+            Entity.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            Entity.GetComponent<SpriteRenderer>().color = Color.white;
+            Destroy(gameObject);
+        }
     }
 
 private IEnumerator RedEffect(GameObject Entity)
