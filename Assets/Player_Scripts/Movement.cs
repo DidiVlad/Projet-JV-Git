@@ -101,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
     private void animCheck()
     {
         anim.SetFloat("velocityX", Mathf.Abs(rb.linearVelocityX));
-        anim.SetFloat("velocityX", rb.linearVelocityY);
+        anim.SetFloat("velocityY", rb.linearVelocityY);
         anim.SetBool("grounded", TouchFloor);
     }
 }
