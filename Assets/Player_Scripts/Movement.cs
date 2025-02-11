@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
         Move();
         Jump();
         ChangeSide();
-        animCheck();
+        AnimCheck();
         if (Input.GetKeyDown(KeyCode.Q) && CanDash)
         {
             StartCoroutine(Dash());
@@ -38,44 +38,50 @@ public class PlayerMovement : MonoBehaviour
  
     }
 
-    void Move()
+void Move()
+{
+    if (!IsDashing)
     {
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocityY);
+    }
+}
+
+void Jump()
+{
+    if (Input.GetKeyDown(KeyCode.Space) && TouchFloor)
+    {
+        jump_count += 1;
+        if (jump_count == 2)
+        {
+            TouchFloor = false;
+        }
         if (!IsDashing)
         {
-            float horizontalInput = Input.GetAxisRaw("Horizontal");
-            rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
-        }
+            rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
+        }        
     }
+}
 
-    void Jump()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && TouchFloor)
-        {
-            jump_count += 1;
-            if (jump_count == 2)
-            {
-                TouchFloor = false;
-            }
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-        }
-    }
+private IEnumerator Dash()
+{
+    CanDash = false;
+    IsDashing = true;
+    float originalGravity = rb.gravityScale;
+    rb.gravityScale = 0f;
+    rb.linearVelocity = new Vector2(transform.localScale.x * dashForce, 0f);
+    tr.emitting = true;
 
-    private IEnumerator Dash()
-    {
-        CanDash = false;
-        IsDashing = true;
-        float originalGravity = rb.gravityScale;
-        rb.gravityScale = 0f;
-        rb.linearVelocity = new Vector2(transform.localScale.x * dashForce, 0f);
-        tr.emitting = true;
-        yield return new WaitForSeconds(DashingTime);
-        tr.emitting = false;
-        rb.gravityScale = originalGravity;
-        IsDashing = false;
-        yield return new WaitForSeconds(Dash_cooldown);
-        CanDash = true;
+    yield return new WaitForSeconds(DashingTime);
 
-    }
+    tr.emitting = false;
+    rb.gravityScale = originalGravity;
+    IsDashing = false;
+
+    yield return new WaitForSeconds(Dash_cooldown);
+    CanDash = true;
+}
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -98,10 +104,17 @@ public class PlayerMovement : MonoBehaviour
 
         }
     }
-    private void animCheck()
+    private void AnimCheck()
     {
         anim.SetFloat("velocityX", Mathf.Abs(rb.linearVelocityX));
         anim.SetFloat("velocityY", rb.linearVelocityY);
         anim.SetBool("grounded", TouchFloor);
+        anim.SetBool("dashing", IsDashing);
+
+        if (!TouchFloor)
+        {
+            anim.Play("Jump");
+        }
     }
+
 }

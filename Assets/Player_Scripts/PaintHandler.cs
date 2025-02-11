@@ -1,48 +1,68 @@
 using System;
 using System.Collections.Generic;
-using Mono.Cecil.Cil;
-using NUnit.Framework;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class PaintHandler : MonoBehaviour
 {
     public Color CurrentColor;
     private int CurrentColorNumber = 0;
-    private int maxColors = 0;
+    private List<string> unlockedColors = new List<string>(); 
+    private Dictionary<string, Color> ColorValues = new Dictionary<string, Color>()
+    {
+        {"black", Color.black},
+        {"yellow", Color.yellow},
+        {"green", Color.green},
+        {"red", Color.red},
+        {"blue", Color.blue}
+    };
+
     private Dictionary<string, bool> Colors = new Dictionary<string, bool>()
     {
-        {"black", true},
+        {"black", true}, 
         {"yellow", false},
         {"green", false},
         {"red", false},
         {"blue", false}
-
     };
+
+    void Start()
+    {
+        unlockedColors.Add("black");
+        CurrentColor = ColorValues["black"];
+    }
 
     void Update()
     {
-        //scroll wheel -> change current color
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f && CurrentColorNumber < Colors.Count) 
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
         {
-            CurrentColorNumber += 1;
+            ChangeColor(1);
         }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0f && CurrentColorNumber > 0) 
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
         {
-            CurrentColorNumber -= 1;
+            ChangeColor(-1);
         }
     }
 
-
-    void UnlockColor(string ColorToUnlock)
+    void ChangeColor(int direction)
     {
-        Colors[ColorToUnlock] = true;
-        maxColors += 1;
-        for (int i = 0; i < maxColors; i++)
+        if (unlockedColors.Count == 0) return;
+
+        CurrentColorNumber += direction;
+
+        if (CurrentColorNumber >= unlockedColors.Count) CurrentColorNumber = 0;
+        if (CurrentColorNumber < 0) CurrentColorNumber = unlockedColors.Count - 1;
+
+        CurrentColor = ColorValues[unlockedColors[CurrentColorNumber]];
+        Debug.Log("Current Color: " + unlockedColors[CurrentColorNumber]);
+    }
+
+    public void UnlockColor(string colorToUnlock)
+    {
+        if (Colors.ContainsKey(colorToUnlock) && !Colors[colorToUnlock])
         {
-            //update ui
-            print("unlocked color");
+            Colors[colorToUnlock] = true;
+            unlockedColors.Add(colorToUnlock);
+            Debug.Log(colorToUnlock + " unlocked!");
         }
     }
 }

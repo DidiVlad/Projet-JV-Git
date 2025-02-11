@@ -10,6 +10,7 @@ TagManager:
   - Paint
   - Projectile
   - Void
+  - Color
   layers:
   - Default
   - TransparentFX
