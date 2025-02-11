@@ -116,7 +116,7 @@ private IEnumerator RedEffect(GameObject Entity)
 {
     gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
     
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 3; i++)
     {
         if (Entity != null)
         {
@@ -126,6 +126,7 @@ private IEnumerator RedEffect(GameObject Entity)
             newEffect.transform.parent = Entity.transform; 
             newEffect.Play();
             Entity.GetComponent<HealthHandler>().HP -= 0.5f;
+            print(Entity.GetComponent<HealthHandler>().HP);
 
             yield return new WaitForSeconds(newEffect.main.duration);
             if (Entity != null)

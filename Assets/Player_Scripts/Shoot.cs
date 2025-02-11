@@ -4,12 +4,9 @@ public class Player_Shoot : MonoBehaviour
 {
     public Transform Pinceau;
     public GameObject Peinture;
-
     Vector2 direction;
-
     public float Peinture_Vitesse;
     public Transform ShootPoint;
-
     public bool Shoot_debounce = false;
     public float Shoot_cooldown = 0.5f;
     public float Last_used_time;

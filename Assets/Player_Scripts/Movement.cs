@@ -17,10 +17,12 @@ public class PlayerMovement : MonoBehaviour
     public float Last_used_time;
     public TrailRenderer tr;
     public GameObject Pinceau;
+    private Animator anim;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -28,10 +30,12 @@ public class PlayerMovement : MonoBehaviour
         Move();
         Jump();
         ChangeSide();
+        animCheck();
         if (Input.GetKeyDown(KeyCode.Q) && CanDash)
         {
             StartCoroutine(Dash());
         }
+ 
     }
 
     void Move()
@@ -93,5 +97,11 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = localScale;
 
         }
+    }
+    private void animCheck()
+    {
+        anim.SetFloat("velocityX", Mathf.Abs(rb.linearVelocityX));
+        anim.SetFloat("velocityX", rb.linearVelocityY);
+        anim.SetBool("grounded", TouchFloor);
     }
 }
