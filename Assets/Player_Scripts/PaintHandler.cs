@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class PaintHandler : MonoBehaviour
 {
@@ -11,20 +14,20 @@ public class PaintHandler : MonoBehaviour
     public GameObject Palette;
     private Dictionary<string, Color> ColorValues = new Dictionary<string, Color>()
     {
-        {"black", Color.black},
-        {"yellow", Color.yellow},
-        {"green", Color.green},
+        {"blue", Color.blue},
         {"red", Color.red},
-        {"blue", Color.blue}
+        {"black", Color.black},
+        {"green", Color.green},
+        {"yellow", Color.yellow}
     };
 
     private Dictionary<string, bool> Colors = new Dictionary<string, bool>()
     {
-        {"black", true}, 
-        {"yellow", false},
-        {"green", false},
+        {"blue", false}, 
         {"red", false},
-        {"blue", false}
+        {"black", true},
+        {"green", false},
+        {"yellow", false}
     };
 
     void Start()
@@ -45,32 +48,49 @@ public class PaintHandler : MonoBehaviour
         }
     }
 
-    void ChangeColor(int direction)
+void ChangeColor(int direction)
+{
+    if (unlockedColors.Count == 0) return;
+
+    CurrentColorNumber += direction;
+
+    if (CurrentColorNumber >= unlockedColors.Count) CurrentColorNumber = 0;
+    if (CurrentColorNumber < 0) CurrentColorNumber = unlockedColors.Count - 1;
+
+    CurrentColor = ColorValues[unlockedColors[CurrentColorNumber]];
+
+    Transform selectedColorTransform = Palette.transform.Find(unlockedColors[CurrentColorNumber]);
+    
+    if (selectedColorTransform != null)
     {
-        if (unlockedColors.Count == 0) return;
-
-        CurrentColorNumber += direction;
-
-        if (CurrentColorNumber >= unlockedColors.Count) CurrentColorNumber = 0;
-        if (CurrentColorNumber < 0) CurrentColorNumber = unlockedColors.Count - 1;
-
-        CurrentColor = ColorValues[unlockedColors[CurrentColorNumber]];
-        Debug.Log("Current Color: " + unlockedColors[CurrentColorNumber]);
-    }
-
-    public void UnlockColor(string colorToUnlock)
-    {
-        print("triggered");
-        if (Colors.ContainsKey(colorToUnlock) && !Colors[colorToUnlock])
+        Transform outline = Palette.transform.Find("Outline");
+        if (outline != null)
         {
-            print("good");
-            Colors[colorToUnlock] = true;
-            unlockedColors.Add(colorToUnlock);
-            Debug.Log(colorToUnlock + " unlocked!");
-            Transform newC = Palette.transform.Find(colorToUnlock);
-            SpriteRenderer colorC = newC.GetComponent<SpriteRenderer>();
-            Color c = colorC.color;
-            c.a = 1f;
+            outline.position = selectedColorTransform.position;
+        }
+
+    }
+}
+
+public void UnlockColor(string colorToUnlock)
+{
+    if (Colors.ContainsKey(colorToUnlock) && !Colors[colorToUnlock])
+    {
+        Colors[colorToUnlock] = true;
+        unlockedColors.Add(colorToUnlock);
+        Transform newCTransform = Palette.transform.Find(colorToUnlock);
+        if (newCTransform != null)
+        {
+            UnityEngine.UI.Image newC = newCTransform.GetComponent<UnityEngine.UI.Image>();
+            if (newC != null) 
+            {
+                Color c = newC.color;
+                c.a = 1f;
+                newC.color = c; 
+                Debug.Log(colorToUnlock + " color alpha set to 1!");
+            }
         }
     }
+}
+
 }
