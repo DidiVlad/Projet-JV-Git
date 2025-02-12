@@ -87,7 +87,6 @@ public void UnlockColor(string colorToUnlock)
                 Color c = newC.color;
                 c.a = 1f;
                 newC.color = c; 
-                Debug.Log(colorToUnlock + " color alpha set to 1!");
             }
         }
     }

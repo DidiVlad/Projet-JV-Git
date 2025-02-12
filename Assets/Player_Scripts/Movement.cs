@@ -108,13 +108,8 @@ private IEnumerator Dash()
     {
         anim.SetFloat("velocityX", Mathf.Abs(rb.linearVelocityX));
         anim.SetFloat("velocityY", rb.linearVelocityY);
-        anim.SetBool("grounded", TouchFloor);
+        anim.SetFloat("jump_c", jump_count);
         anim.SetBool("dashing", IsDashing);
-
-        if (!TouchFloor)
-        {
-            anim.Play("Jump");
-        }
     }
 
 }

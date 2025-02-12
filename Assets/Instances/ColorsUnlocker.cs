@@ -6,7 +6,6 @@ public class ColorsUnlocker : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            print("unlcoked");
             collision.gameObject.GetComponent<PaintHandler>().UnlockColor(gameObject.name);
             Destroy(gameObject);
         }
