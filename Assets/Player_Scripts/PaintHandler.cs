@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 
 public class PaintHandler : MonoBehaviour
@@ -7,6 +8,7 @@ public class PaintHandler : MonoBehaviour
     public Color CurrentColor;
     private int CurrentColorNumber = 0;
     private List<string> unlockedColors = new List<string>(); 
+    public GameObject Palette;
     private Dictionary<string, Color> ColorValues = new Dictionary<string, Color>()
     {
         {"black", Color.black},
@@ -65,6 +67,10 @@ public class PaintHandler : MonoBehaviour
             Colors[colorToUnlock] = true;
             unlockedColors.Add(colorToUnlock);
             Debug.Log(colorToUnlock + " unlocked!");
+            Transform newC = Palette.transform.Find(colorToUnlock);
+            SpriteRenderer colorC = newC.GetComponent<SpriteRenderer>();
+            Color c = colorC.color;
+            c.a = 1f;
         }
     }
 }

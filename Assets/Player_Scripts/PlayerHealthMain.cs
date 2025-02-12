@@ -9,7 +9,7 @@ public class PlayerHealthMain : MonoBehaviour
     public GameObject Lastcheckpoint;
     public GameObject Spawners_parent;
     public GameObject EnemiesHolder;
-    public GameObject HealthBar;
+    [SerializeField] private HeartManager coeurs;
 
     void Start()
     {
@@ -18,6 +18,7 @@ public class PlayerHealthMain : MonoBehaviour
 
     void Update()
     {
+        updateVie();
         if (CheckForHP())
         {
             ResetPlayer();
@@ -61,6 +62,13 @@ public class PlayerHealthMain : MonoBehaviour
         HP = 3;
         gameObject.transform.position = Lastcheckpoint.transform.position;
         SpawnEnemies();
+    }
+
+    
+    void updateVie() {
+        if (coeurs != null) {
+            coeurs.updateCoeur((int)HP);
+        }
     }
 
     void SpawnEnemies()
