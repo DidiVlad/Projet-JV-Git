@@ -6,7 +6,7 @@ public class PlayerHealthMain : MonoBehaviour
 {
     public float HP = 3f;
     public bool CanTakeDamage = true;
-    public GameObject Lastcheckpoint;
+    public Transform Lastcheckpoint;
     public GameObject Spawners_parent;
     public GameObject EnemiesHolder;
     [SerializeField] private HeartManager coeurs;
@@ -85,7 +85,6 @@ public class PlayerHealthMain : MonoBehaviour
         GameObject new_Enemy = Instantiate(Child.GetComponent<Spawner>().Enemy_To_Spawn);
         new_Enemy.transform.position = Child.transform.position;
         new_Enemy.transform.parent = EnemiesHolder.transform;
-        new_Enemy.GetComponent<IA_Main>().plr = gameObject;
         }
 
     }

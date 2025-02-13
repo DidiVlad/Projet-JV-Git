@@ -147,7 +147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   plr: {fileID: 0}
   DetectRadius: 6
-  EnemySpeed: 3
+  EnemySpeed: 5
 --- !u!70 &3171241785015001616
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

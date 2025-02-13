@@ -98,6 +98,10 @@ void PaintEffect(Color color, GameObject Entity)
     {
         StartCoroutine(BlueEffect(Entity));
     }  
+    else if (color == Color.green)
+    {
+        StartCoroutine(GreenEffect(Entity));
+    }  
 }
 
     private IEnumerator BlueEffect(GameObject Entity)
@@ -115,35 +119,54 @@ void PaintEffect(Color color, GameObject Entity)
         }
     }
 
-private IEnumerator RedEffect(GameObject Entity)
-{
-    gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
-    
-    for (int i = 0; i < 3; i++)
+    private IEnumerator RedEffect(GameObject Entity)
     {
-        if (Entity != null)
+        gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
+        
+        for (int i = 0; i < 3; i++)
         {
-            Entity.GetComponent<SpriteRenderer>().color = Color.red;
-
-            ParticleSystem newEffect = Instantiate(FireEffect, Entity.transform.position, Quaternion.identity);
-            newEffect.transform.parent = Entity.transform; 
-            newEffect.Play();
-            Entity.GetComponent<HealthHandler>().HP -= 0.5f;
-            print(Entity.GetComponent<HealthHandler>().HP);
-
-            yield return new WaitForSeconds(newEffect.main.duration);
             if (Entity != null)
             {
-                Entity.GetComponent<SpriteRenderer>().color = Color.white;
-                Destroy(newEffect.gameObject);
+                Entity.GetComponent<SpriteRenderer>().color = Color.red;
+
+                ParticleSystem newEffect = Instantiate(FireEffect, Entity.transform.position, Quaternion.identity);
+                newEffect.transform.parent = Entity.transform; 
+                newEffect.Play();
+                Entity.GetComponent<HealthHandler>().HP -= 0.5f;
+                print(Entity.GetComponent<HealthHandler>().HP);
+
+                yield return new WaitForSeconds(newEffect.main.duration);
+                if (Entity != null)
+                {
+                    Entity.GetComponent<SpriteRenderer>().color = Color.white;
+                    Destroy(newEffect.gameObject);
+                }
             }
+        }
+    }
+private IEnumerator GreenEffect(GameObject Entity)
+{
+    if (Entity != null)
+    {
+        gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
+        Entity.GetComponent<HealthHandler>().HP -= 0.75f;
+        Entity.GetComponent<SpriteRenderer>().color = Color.green;
+        Vector2 pushDirection = (Entity.transform.position - transform.position).normalized;
+        Rigidbody2D rb = Entity.GetComponent<Rigidbody2D>();
+
+        if (rb != null)
+        {
+            rb.AddForce(pushDirection * 50f, ForceMode2D.Impulse);
+        }
+        yield return new WaitForSeconds(1);
+        if (Entity != null)
+        {
+            Entity.GetComponent<SpriteRenderer>().color = Color.white;
         }
     }
 }
 
 
 
+
 }
-
-
-

@@ -10,6 +10,7 @@ public class IA_Main : MonoBehaviour
 
     void Start()
     {
+        plr = GameObject.FindGameObjectWithTag("Player");
         rb = GetComponent<Rigidbody2D>();
     }
 
