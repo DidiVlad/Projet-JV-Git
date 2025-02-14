@@ -19,4 +19,9 @@ public class PlayButton : MonoBehaviour
             Debug.LogWarning("No parent found to destroy!");
         }
     }
+
+    private void Hover()
+    {
+
+    }
 }
