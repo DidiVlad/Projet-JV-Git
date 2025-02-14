@@ -5,6 +5,8 @@ using NUnit.Framework.Constraints;
 using Unity.Mathematics;
 using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.Rendering.Universal;
 
 public class PeintureCollision : MonoBehaviour
 {
@@ -40,6 +42,10 @@ public class PeintureCollision : MonoBehaviour
         PaintEffect(Peinture.GetComponent<SpriteRenderer>().color, other.gameObject);
     }
     else if (other.gameObject.CompareTag("Void"))
+    {
+        Destroy(gameObject);
+    }
+    else if (other.gameObject.CompareTag("EnvItem"))
     {
         Destroy(gameObject);
     }
@@ -163,6 +169,19 @@ private IEnumerator GreenEffect(GameObject Entity)
         {
             Entity.GetComponent<SpriteRenderer>().color = Color.white;
         }
+    }
+}
+
+private void EnvEffect(Color color, GameObject obj)
+{
+    if(color == Color.red && obj.name == "Lianes")
+    {
+        Destroy(obj);
+    }
+    else if(color == Color.yellow && obj.name == "Light")
+    {
+       Light2D light = obj.GetComponent<Light2D>();
+       light.enabled = true;
     }
 }
 

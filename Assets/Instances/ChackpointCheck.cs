@@ -5,22 +5,30 @@ public class ChackpointCheck : MonoBehaviour
     public GameObject player;
     private float Detectradius = 1f;
     public GameObject CPText;
+    public ParticleSystem CPEffect;
 
     void Update()
     {
         Transform nearestCP = ReturnNearestCP();
-        
+
         if (nearestCP != null)
         {
+            // Show text above checkpoint
             CPText.transform.position = nearestCP.position + new Vector3(0, 0.5f, 0);
             CPText.SetActive(true);
 
+            // When player presses E
             if (Input.GetKeyDown(KeyCode.E))
             {
-            player.GetComponent<PlayerHealthMain>().Lastcheckpoint = nearestCP;
+                player.GetComponent<PlayerHealthMain>().Lastcheckpoint = nearestCP;
+
+                // Spawn particle effect at checkpoint
+                ParticleSystem newCPEffect = Instantiate(CPEffect, nearestCP.position, Quaternion.identity);
+
+                newCPEffect.Emit(20);
+                Destroy(newCPEffect, 1f);
             }
         }
-        
         else
         {
             CPText.SetActive(false);
