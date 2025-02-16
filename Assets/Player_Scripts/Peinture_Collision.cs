@@ -18,6 +18,7 @@ public class PeintureCollision : MonoBehaviour
     SpriteRenderer sprt_renderer;
     private bool hasHitEnemy = false;
     private GameObject Player;
+    public Sprite torch_ignite;
 
     void Start()
     {
@@ -48,6 +49,7 @@ public class PeintureCollision : MonoBehaviour
     else if (other.gameObject.CompareTag("EnvItem"))
     {
         Destroy(gameObject);
+        EnvEffect(Peinture.GetComponent<SpriteRenderer>().color, other.gameObject);
     }
 }
 
@@ -59,6 +61,10 @@ public class PeintureCollision : MonoBehaviour
             GameObject flake = Instantiate(FlakePrefab, position, rotation);
             sprt_renderer = flake.GetComponent<SpriteRenderer>();
             sprt_renderer.color = Peinture.GetComponent<SpriteRenderer>().color;
+            if (sprt_renderer.color == Color.yellow)
+            {
+                flake.GetComponent<Light2D>().enabled = true;
+            }
 
             Destroy(flake, FlakeLifetime);
         }
@@ -176,15 +182,25 @@ private void EnvEffect(Color color, GameObject obj)
 {
     if(color == Color.red && obj.name == "Lianes")
     {
-        Destroy(obj);
+        FireOnEnv(obj);
     }
     else if(color == Color.yellow && obj.name == "Light")
     {
        Light2D light = obj.GetComponent<Light2D>();
+       SpriteRenderer skin = obj.GetComponent<SpriteRenderer>();
+       skin.sprite = torch_ignite;
        light.enabled = true;
     }
 }
 
+private void FireOnEnv(GameObject obj)
+{
+    ParticleSystem newEffect = Instantiate(FireEffect, obj.transform.position, Quaternion.identity);
+    newEffect.transform.parent = obj.transform; 
+    newEffect.Play();
+    Destroy(obj, 1.5f);
+    Destroy(newEffect, 1.5f);
+}
 
 
 

@@ -170,3 +170,4 @@ MonoBehaviour:
   Peinture: {fileID: 4899112219724889359}
   PaintHitEffect: {fileID: 7870955545562564540, guid: 61c3ad0eda930694395d402abb2f0a1e, type: 3}
   FireEffect: {fileID: 4356855873393775713, guid: 7bcce9bfd16ad504ca679361c1bdcd18, type: 3}
+  torch_ignite: {fileID: 21300000, guid: 5e38b8353579b6b40bcc93082ba22ab2, type: 3}

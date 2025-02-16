@@ -13,20 +13,17 @@ public class ChackpointCheck : MonoBehaviour
 
         if (nearestCP != null)
         {
-            // Show text above checkpoint
             CPText.transform.position = nearestCP.position + new Vector3(0, 0.5f, 0);
             CPText.SetActive(true);
 
-            // When player presses E
             if (Input.GetKeyDown(KeyCode.E))
             {
                 player.GetComponent<PlayerHealthMain>().Lastcheckpoint = nearestCP;
 
-                // Spawn particle effect at checkpoint
                 ParticleSystem newCPEffect = Instantiate(CPEffect, nearestCP.position, Quaternion.identity);
 
                 newCPEffect.Emit(20);
-                Destroy(newCPEffect, 1f);
+                Destroy(newCPEffect, 1);
             }
         }
         else
