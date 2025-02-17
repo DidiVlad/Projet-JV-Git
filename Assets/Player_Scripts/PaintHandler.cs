@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
+using TMPro;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ public class PaintHandler : MonoBehaviour
     private int CurrentColorNumber = 0;
     private List<string> unlockedColors = new List<string>(); 
     public GameObject Palette;
+    public TrailRenderer Trail;
     private Dictionary<string, Color> ColorValues = new Dictionary<string, Color>()
     {
         {"blue", Color.blue},
@@ -58,6 +60,7 @@ void ChangeColor(int direction)
     if (CurrentColorNumber < 0) CurrentColorNumber = unlockedColors.Count - 1;
 
     CurrentColor = ColorValues[unlockedColors[CurrentColorNumber]];
+    ChangeTrailColor();
 
     Transform selectedColorTransform = Palette.transform.Find(unlockedColors[CurrentColorNumber]);
     
@@ -91,5 +94,17 @@ public void UnlockColor(string colorToUnlock)
         }
     }
 }
+void ChangeTrailColor()
+{
+    Gradient gradient = new Gradient();
+    gradient.SetKeys(
+        new GradientColorKey[] { new GradientColorKey(CurrentColor, 0f), new GradientColorKey(CurrentColor, 1f) },
+        new GradientAlphaKey[] { new GradientAlphaKey(CurrentColor.a, 0f), new GradientAlphaKey(CurrentColor.a * 0.5f, 1f) }
+    );
+
+    Trail.colorGradient = gradient;
+}
+
 
 }
+
