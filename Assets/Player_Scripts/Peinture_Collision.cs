@@ -1,207 +1,252 @@
-using System;
 using System.Collections;
-using Mono.Cecil.Cil;
-using NUnit.Framework.Constraints;
-using Unity.Mathematics;
-using UnityEditor.SearchService;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Rendering.Universal;
 
 public class PeintureCollision : MonoBehaviour
 {
+    [Header("Paint Settings")]
     public GameObject FlakePrefab;
     public float FlakeLifetime = 3f;
     public GameObject Peinture;
     public ParticleSystem PaintHitEffect;
     public ParticleSystem FireEffect;
-    SpriteRenderer sprt_renderer;
-    private bool hasHitEnemy = false;
-    private GameObject Player;
+
+    [Header("Torch Settings")]
     public Sprite torch_ignite;
 
-    void Start()
+    private SpriteRenderer spriteRenderer;
+    private bool hasHitEnemy = false;
+    private GameObject Player;
+
+    private void Start()
     {
-        Player =  GameObject.FindGameObjectWithTag("Player");
-        gameObject.GetComponent<SpriteRenderer>().color = Player.GetComponent<PaintHandler>().CurrentColor;
+        Player = GameObject.FindGameObjectWithTag("Player");
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.color = Player.GetComponent<PaintHandler>().CurrentColor;
     }
 
-  private void OnTriggerEnter2D(Collider2D other)
-{
-    if (other.gameObject.CompareTag("Ground"))
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, other.transform.up);
+        switch (other.gameObject.tag)
+        {
+            case "Ground":
+                LeaveFlake(other.ClosestPoint(transform.position), other.transform.rotation);
+                spriteRenderer.color = Color.clear;
+                break;
 
-        LeaveFlake(other.ClosestPoint(transform.position), surfaceRotation );
-        gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
-    }
-    if (hasHitEnemy) return;
-    else if (other.gameObject.CompareTag("Enemy"))
-    {
-        hasHitEnemy = true;
-        HitEffect(other.gameObject);
-        PaintEffect(Peinture.GetComponent<SpriteRenderer>().color, other.gameObject);
-    }
-    else if (other.gameObject.CompareTag("Void"))
-    {
-        Destroy(gameObject);
-    }
-    else if (other.gameObject.CompareTag("EnvItem"))
-    {
-        Destroy(gameObject);
-        EnvEffect(Peinture.GetComponent<SpriteRenderer>().color, other.gameObject);
-    }
-}
+            case "Enemy":
+                if (!hasHitEnemy)
+                {
+                    hasHitEnemy = true;
+                    HitEffect(other.gameObject);
+                    PaintEffect(Peinture.GetComponent<SpriteRenderer>().color, other.gameObject);
+                }
+                break;
 
+            case "Void":
+                Destroy(gameObject);
+                break;
+
+            case "EnvItem":
+                EnvEffect(Peinture.GetComponent<SpriteRenderer>().color, other.gameObject);
+                break;
+        }
+    }
 
     private void LeaveFlake(Vector2 position, Quaternion rotation)
     {
-        if (FlakePrefab != null)
+        if (FlakePrefab == null) return;
+
+        GameObject flake = Instantiate(FlakePrefab, position, rotation);
+        SpriteRenderer flakeRenderer = flake.GetComponent<SpriteRenderer>();
+        flakeRenderer.color = Peinture.GetComponent<SpriteRenderer>().color;
+
+        if (flakeRenderer.color == Color.yellow)
         {
-            GameObject flake = Instantiate(FlakePrefab, position, rotation);
-            sprt_renderer = flake.GetComponent<SpriteRenderer>();
-            sprt_renderer.color = Peinture.GetComponent<SpriteRenderer>().color;
-            if (sprt_renderer.color == Color.yellow)
-            {
-                flake.GetComponent<Light2D>().enabled = true;
-            }
-
-            Destroy(flake, FlakeLifetime);
+            flake.GetComponent<Light2D>().enabled = true;
         }
+
+        Destroy(flake, FlakeLifetime);
     }
-void HitEffect(GameObject Entity)
-{
-    if (PaintHitEffect != null)
+
+    private void HitEffect(GameObject entity)
     {
-        Color paint_color = Peinture.GetComponent<SpriteRenderer>().color;
+        if (PaintHitEffect == null)
+        {
+            Debug.LogWarning("PaintHitEffect is not assigned!");
+            return;
+        }
 
-        ParticleSystem newEffect = Instantiate(PaintHitEffect, Entity.transform.position, Entity.transform.rotation);
+        Color paintColor = Peinture.GetComponent<SpriteRenderer>().color;
+        ParticleSystem newEffect = Instantiate(PaintHitEffect, entity.transform.position, entity.transform.rotation);
+        newEffect.transform.parent = entity.transform;
 
-        newEffect.transform.parent = Entity.transform;
-        var mainModule = newEffect.main; 
-        mainModule.startColor = paint_color;
+        var mainModule = newEffect.main;
+        mainModule.startColor = paintColor;
 
         if (newEffect.trails.enabled)
         {
-            var trailsModule = newEffect.trails; 
-            trailsModule.colorOverTrail = new ParticleSystem.MinMaxGradient(paint_color);
+            var trailsModule = newEffect.trails;
+            trailsModule.colorOverTrail = new ParticleSystem.MinMaxGradient(paintColor);
         }
+
         newEffect.Emit(3);
         Destroy(newEffect.gameObject, 0.5f);
     }
-    else
-    {
-        Debug.LogWarning("PaintHitEffect is not assigned!");
-    }
-}
 
-void PaintEffect(Color color, GameObject Entity)
+private void PaintEffect(Color color, GameObject entity)
 {
-    if (color == Color.black)
+    if (color.Equals(Color.black)) 
     {
-        Entity.GetComponent<HealthHandler>().HP -= 1;
+        entity.GetComponent<HealthHandler>().HP -= 1;
         Destroy(gameObject);
     }
-    else if (color == Color.red)
+    else if (color.Equals(Color.red))
     {
-        StartCoroutine(RedEffect(Entity));
+        StartCoroutine(RedEffect(entity));
     }
-    else if (color == Color.blue)
+    else if (color.Equals(Color.blue))
     {
-        StartCoroutine(BlueEffect(Entity));
-    }  
-    else if (color == Color.green)
+        StartCoroutine(BlueEffect(entity));
+    }
+    else if (color.Equals(Color.green))
     {
-        StartCoroutine(GreenEffect(Entity));
-    }  
+        StartCoroutine(GreenEffect(entity));
+    }
+    else if (color.Equals(Color.yellow))
+    {
+        YellowEffect(entity);
+    }
 }
 
-    private IEnumerator BlueEffect(GameObject Entity)
+
+    private IEnumerator BlueEffect(GameObject entity)
     {
-        gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
-        Entity.GetComponent<HealthHandler>().HP -= 0.5f;
-        Entity.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-        Entity.GetComponent<SpriteRenderer>().color = Color.blue;
-        yield return new WaitForSeconds(1f);
-        if (Entity != null)
+        if (entity == null) yield break;
+
+        spriteRenderer.color = Color.clear;
+        entity.GetComponent<HealthHandler>().HP -= 0.5f;
+
+        Rigidbody2D rb = entity.GetComponent<Rigidbody2D>();
+        SpriteRenderer entityRenderer = entity.GetComponent<SpriteRenderer>();
+
+        if (rb)
         {
-            Entity.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-            Entity.GetComponent<SpriteRenderer>().color = Color.white;
+            rb.bodyType = RigidbodyType2D.Static;
+        }
+
+        entityRenderer.color = Color.blue;
+        yield return new WaitForSeconds(1f);
+
+        if (entity)
+        {
+            if (rb) rb.bodyType = RigidbodyType2D.Dynamic;
+            entityRenderer.color = Color.white;
             Destroy(gameObject);
         }
     }
 
-    private IEnumerator RedEffect(GameObject Entity)
+    private IEnumerator RedEffect(GameObject entity)
     {
-        gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
-        
+        if (entity == null) yield break;
+
+        spriteRenderer.color = Color.clear;
+
         for (int i = 0; i < 3; i++)
         {
-            if (Entity != null)
+            if (entity == null) yield break;
+
+            entity.GetComponent<SpriteRenderer>().color = Color.red;
+
+            ParticleSystem newEffect = Instantiate(FireEffect, entity.transform.position, Quaternion.identity);
+            newEffect.transform.parent = entity.transform;
+            newEffect.Play();
+
+            entity.GetComponent<HealthHandler>().HP -= 0.5f;
+            yield return new WaitForSeconds(newEffect.main.duration);
+
+            if (entity)
             {
-                Entity.GetComponent<SpriteRenderer>().color = Color.red;
-
-                ParticleSystem newEffect = Instantiate(FireEffect, Entity.transform.position, Quaternion.identity);
-                newEffect.transform.parent = Entity.transform; 
-                newEffect.Play();
-                Entity.GetComponent<HealthHandler>().HP -= 0.5f;
-                print(Entity.GetComponent<HealthHandler>().HP);
-
-                yield return new WaitForSeconds(newEffect.main.duration);
-                if (Entity != null)
-                {
-                    Entity.GetComponent<SpriteRenderer>().color = Color.white;
-                    Destroy(newEffect.gameObject);
-                }
+                entity.GetComponent<SpriteRenderer>().color = Color.white;
+                Destroy(newEffect.gameObject);
             }
         }
     }
-private IEnumerator GreenEffect(GameObject Entity)
-{
-    if (Entity != null)
-    {
-        gameObject.GetComponent<SpriteRenderer>().color = Color.clear;
-        Entity.GetComponent<HealthHandler>().HP -= 0.75f;
-        Entity.GetComponent<SpriteRenderer>().color = Color.green;
-        Vector2 pushDirection = (Entity.transform.position - transform.position).normalized;
-        Rigidbody2D rb = Entity.GetComponent<Rigidbody2D>();
 
-        if (rb != null)
+    private IEnumerator GreenEffect(GameObject entity)
+    {
+        if (entity == null) yield break;
+
+        spriteRenderer.color = Color.clear;
+        entity.GetComponent<HealthHandler>().HP -= 0.75f;
+
+        Rigidbody2D rb = entity.GetComponent<Rigidbody2D>();
+        SpriteRenderer entityRenderer = entity.GetComponent<SpriteRenderer>();
+
+        if (rb)
         {
+            Vector2 pushDirection = (entity.transform.position - transform.position).normalized;
             rb.AddForce(pushDirection * 50f, ForceMode2D.Impulse);
         }
-        yield return new WaitForSeconds(1);
-        if (Entity != null)
+
+        entityRenderer.color = Color.green;
+        yield return new WaitForSeconds(1f);
+
+        if (entity)
         {
-            Entity.GetComponent<SpriteRenderer>().color = Color.white;
+            entityRenderer.color = Color.white;
         }
     }
-}
 
-private void EnvEffect(Color color, GameObject obj)
-{
-    if(color == Color.red && obj.name == "Lianes")
+    private void YellowEffect(GameObject Entity)
     {
-        FireOnEnv(obj);
+        Destroy(gameObject);
     }
-    else if(color == Color.yellow && obj.name == "Light")
+
+    private void EnvEffect(Color color, GameObject obj)
     {
-       Light2D light = obj.GetComponent<Light2D>();
-       SpriteRenderer skin = obj.GetComponent<SpriteRenderer>();
-       skin.sprite = torch_ignite;
-       light.enabled = true;
+        switch (obj.name)
+        {
+            case "Lianes" when color == Color.red:
+                FireOnEnv(obj);
+                break;
+
+            case "Light" when color == Color.yellow:
+                Destroy(gameObject);
+                Light2D light = obj.GetComponent<Light2D>();
+                SpriteRenderer skin = obj.GetComponent<SpriteRenderer>();
+
+                skin.sprite = torch_ignite;
+                light.enabled = true;
+                break;
+            case "Seed" when color == Color.green:
+                GreenOnV(obj);
+                break;
+
+        }
     }
-}
 
-private void FireOnEnv(GameObject obj)
-{
-    ParticleSystem newEffect = Instantiate(FireEffect, obj.transform.position, Quaternion.identity);
-    newEffect.transform.parent = obj.transform; 
-    newEffect.Play();
-    Destroy(obj, 1.5f);
-    Destroy(newEffect, 1.5f);
-}
+    private void FireOnEnv(GameObject obj)
+    {
+        Destroy(gameObject);
+        ParticleSystem newEffect = Instantiate(FireEffect, obj.transform.position, Quaternion.identity);
+        newEffect.transform.parent = obj.transform;
+        newEffect.Play();
 
+        Destroy(obj, 1.5f);
+        Destroy(newEffect, 1.5f);
+    }
 
+    private void GreenOnV(GameObject obj)
+    {
+        print("triggered");
+        StartCoroutine(GrowthSequence(obj));
+    }
 
+    private IEnumerator GrowthSequence(GameObject obj)
+    {
+        yield return StartCoroutine(obj.GetComponent<Growing>().Growth());
+        Destroy(gameObject);
+    }
 }
