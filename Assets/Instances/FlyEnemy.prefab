@@ -107,6 +107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 3
   MaxHP: 3
+  PaintEffect: {fileID: 0}
 --- !u!114 &4228059649573398017
 MonoBehaviour:
   m_ObjectHideFlags: 0

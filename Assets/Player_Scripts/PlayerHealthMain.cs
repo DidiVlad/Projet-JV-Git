@@ -32,6 +32,7 @@ public class PlayerHealthMain : MonoBehaviour
         {
            if (CanTakeDamage)
           {
+            Destroy(other);
               CanTakeDamage = false;
               HP -= 1;
               gameObject.GetComponent<SpriteRenderer>().color = Color.red;

@@ -4,17 +4,14 @@ public class HealthHandler : MonoBehaviour
 {
     public float HP = 3f; 
     public float MaxHP = 3f;
-
-    void Start()
-    {
-        
-    }
+    public ParticleSystem PaintEffect;
 
     void Update()
     {
         if (HP <= 0)
         {
-            Destroy(gameObject);
+        Destroy(gameObject);
         }
+
     }
 }

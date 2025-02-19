@@ -108,7 +108,7 @@ private IEnumerator Dash()
     {
         anim.SetFloat("velocityX", Mathf.Abs(rb.linearVelocityX));
         anim.SetFloat("velocityY", rb.linearVelocityY);
-        anim.SetFloat("jump_c", jump_count);
+        anim.SetInteger("jump_c", jump_count);
         anim.SetBool("dashing", IsDashing);
     }
 

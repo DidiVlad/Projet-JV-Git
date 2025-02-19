@@ -58,7 +58,7 @@ public class Fly_script : MonoBehaviour
         GameObject newProjectile = Instantiate(Projectile);
         newProjectile.transform.position = transform.position;
         Vector2 direction = (plr.transform.position - transform.position).normalized;
-        newProjectile.GetComponent<Rigidbody2D>().AddForce(direction, ForceMode2D.Impulse);
+        newProjectile.GetComponent<Rigidbody2D>().AddForce(direction*5, ForceMode2D.Impulse);
 
         yield return new WaitForSeconds(ProjectileCD);
         canAttack = true;

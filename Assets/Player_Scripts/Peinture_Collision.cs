@@ -137,7 +137,7 @@ private void PaintEffect(Color color, GameObject entity)
         }
 
         entityRenderer.color = Color.blue;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
 
         if (entity)
         {
